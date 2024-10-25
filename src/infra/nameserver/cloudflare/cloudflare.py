@@ -1,5 +1,4 @@
 from ipaddress import IPv4Address
-from dotenv import 
 
 from src.infra.nameserver.interface import NameserverInterface
 from src.domain.value_objects import DNSRecord
