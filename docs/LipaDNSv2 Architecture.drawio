@@ -111,7 +111,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="Detailed" id="B1CTTdqDy7k216JSqs4t">
-    <mxGraphModel dx="3462" dy="2255" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+    <mxGraphModel dx="3313" dy="2182" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
         <mxCell id="eHbWA-2uv81LIYB3V1RF-0" />
         <mxCell id="eHbWA-2uv81LIYB3V1RF-1" parent="eHbWA-2uv81LIYB3V1RF-0" />
@@ -176,7 +176,10 @@
         <mxCell id="eHbWA-2uv81LIYB3V1RF-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;endArrow=block;endFill=1;startSize=6;endSize=6;" edge="1" parent="eHbWA-2uv81LIYB3V1RF-1" source="eHbWA-2uv81LIYB3V1RF-23" target="eHbWA-2uv81LIYB3V1RF-24">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="eHbWA-2uv81LIYB3V1RF-23" value="&lt;b&gt;Nameserver Interface&lt;/b&gt;&lt;div&gt;+ get_record_by_ip(ip: IpAddr) -&amp;gt; DNSRecord&lt;/div&gt;&lt;div&gt;+ get_record_by_name(str: name) -&amp;gt; DNSRecord&lt;/div&gt;&lt;div&gt;+ set_record(record: DNSRecord)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#F2B749;strokeWidth=3;fontFamily=Gravita HUM;fontSize=13;spacing=10;align=left;verticalAlign=top;fontColor=default;fillColor=default;arcSize=9;dashed=1;dashPattern=1 2;" vertex="1" parent="eHbWA-2uv81LIYB3V1RF-1">
+        <mxCell id="lX73IaLVKEBlA5rWiBzl-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;strokeColor=default;strokeWidth=2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;startSize=6;endArrow=block;endFill=1;endSize=6;curved=1;" edge="1" parent="eHbWA-2uv81LIYB3V1RF-1" source="eHbWA-2uv81LIYB3V1RF-23" target="lX73IaLVKEBlA5rWiBzl-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eHbWA-2uv81LIYB3V1RF-23" value="&lt;b&gt;Nameserver Interface&lt;/b&gt;&lt;div&gt;+ get_record_by_ip(ip: IpAddr) -&amp;gt; DNSRecord&lt;/div&gt;&lt;div&gt;+ get_record_by_name(str: name) -&amp;gt; DNSRecord&lt;/div&gt;&lt;div&gt;+ set_record(dns_record: DNSRecord)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#F2B749;strokeWidth=3;fontFamily=Gravita HUM;fontSize=13;spacing=10;align=left;verticalAlign=top;fontColor=default;fillColor=default;arcSize=9;dashed=1;dashPattern=1 2;" vertex="1" parent="eHbWA-2uv81LIYB3V1RF-1">
           <mxGeometry x="-2000" y="-1320" width="320" height="90" as="geometry" />
         </mxCell>
         <mxCell id="eHbWA-2uv81LIYB3V1RF-24" value="&lt;b&gt;Cloudflare API&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#F2B749;strokeWidth=3;fontFamily=Gravita HUM;fontSize=13;spacing=10;align=left;verticalAlign=top;fontColor=default;fillColor=default;arcSize=9;" vertex="1" parent="eHbWA-2uv81LIYB3V1RF-1">
