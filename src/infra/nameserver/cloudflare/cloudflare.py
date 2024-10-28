@@ -10,10 +10,15 @@ from src.infra.nameserver.cloudflare.dtos import CloudflareListDNSRecordsInputDT
 class CloudflareNameserver(NameserverInterface):
     _cloudflare_api_key: str
     _cloudflare_zone_id: str
+    _headers: dict[str, str]
 
     def __init__(self, cloudflare_api_key: str, cloudflare_zone_id: str):
         self._cloudflare_api_key = cloudflare_api_key
         self._cloudflare_zone_id = cloudflare_zone_id
+        self._headers = {
+            "Content-Type": "application/json",
+            "X-Auth-Key": self._cloudflare_api_key
+        }
 
     def get_record_by_ip(self, ip: IPv4Address, logger: Logger) -> Optional[DNSRecord]:
         params: dict[str, str | IPv4Address] = {
@@ -37,15 +42,10 @@ class CloudflareNameserver(NameserverInterface):
     def _get_record(self, params: dict[str, str | IPv4Address], logger: Logger):
         url: str = f"https://api.cloudflare.com/client/v4/zones/{self._cloudflare_zone_id}/dns_records"
         
-        headers = {
-            "Content-Type": "application/json",
-            "X-Auth-Key": self._cloudflare_api_key
-        }
-        
         # Make request to Cloudflare
         response = Response()
         try:
-            response = get(url=url, headers=headers, params=params, timeout=5) # type: ignore
+            response = get(url=url, headers=self._headers, params=params, timeout=5) # type: ignore
             response.raise_for_status()
             logger.info(f"Successfully fetched the DNS Record from Cloudflare. Parameters: {params}")
         except ConnectionError as e:
@@ -69,4 +69,4 @@ class CloudflareNameserver(NameserverInterface):
         except ValueError as e:
             logger.error(f"Failed to parse request JSON: {e}")
             return None
-        
+    
