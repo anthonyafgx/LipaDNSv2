@@ -15,7 +15,11 @@ class Ipify(ExternalIpInterface):
             return ip
         except Timeout:
             logger.error("Request timed out when fetching the IP from Ipify.")
+            return None
         except AddressValueError:
             logger.error(f"Received an invalid IPv4 address from Ipify: {response.text}")
+            return None
         except RequestException as e:
             logger.error(f"An error occurred during the request {e}")
+            return None
+        
