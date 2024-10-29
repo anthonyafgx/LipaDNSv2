@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, Dict
+from typing import Optional
 from ipaddress import IPv4Address
+
+from src.infra.nameserver.cloudflare.exceptions import MultipleDNSRecordsFoundError
 
 class CloudflareDNSRecord(BaseModel):
     model_config = ConfigDict(frozen=True)
