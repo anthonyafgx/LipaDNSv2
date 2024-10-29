@@ -17,7 +17,7 @@ class CloudflareNameserver(NameserverInterface):
         self._cloudflare_zone_id = cloudflare_zone_id
         self._headers = {
             "Content-Type": "application/json",
-            "X-Auth-Key": self._cloudflare_api_key
+            "Authorization": f"Bearer {self._cloudflare_api_key}"
         }
 
     def get_record_by_ip(self, ip: IPv4Address, logger: Logger) -> Optional[DNSRecord]:
