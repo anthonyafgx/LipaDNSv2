@@ -27,7 +27,7 @@ def test_ip() -> str:
     return os.getenv('TEST_IP', '')
 
 def test_get_record_by_ip(api_key: str, cloudflare_zone_id: str, domain_name: str, test_ip: str): # type: ignore
-    logger: Logger = StandardLogger(LogLevel.DEBUG)
+    logger: Logger = StandardLogger(LogLevel.INFO)
     nameserver = CloudflareNameserver(cloudflare_api_key=api_key, cloudflare_zone_id=cloudflare_zone_id)
     dns_record: Optional[DNSRecord] = nameserver.get_record_by_ip(
                                         ip=IPv4Address(test_ip),
@@ -37,7 +37,7 @@ def test_get_record_by_ip(api_key: str, cloudflare_zone_id: str, domain_name: st
     assert dns_record.name == domain_name
 
 def test_set_record(api_key: str, cloudflare_zone_id: str, domain_name: str, test_ip: str): # type: ignore
-    logger: Logger = StandardLogger(LogLevel.DEBUG)
+    logger: Logger = StandardLogger(LogLevel.INFO)
     nameserver = CloudflareNameserver(cloudflare_api_key=api_key, cloudflare_zone_id=cloudflare_zone_id)
     dns_record = DNSRecord(ip=IPv4Address(test_ip), name=domain_name)
     

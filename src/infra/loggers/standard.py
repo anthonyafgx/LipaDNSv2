@@ -1,4 +1,5 @@
 import logging
+import logging.handlers
 from typing import Any
 from src.infra.loggers.interface import Logger, LogLevel
 
@@ -22,9 +23,17 @@ class StandardLogger(Logger):
                 logging_level = logging.CRITICAL
             case _: # type: ignore
                 logging_level = logging.DEBUG
-
-        logging.basicConfig(level=logging_level,
-                            format="%(asctime)s \t %(levelname)s \t %(message)s")
+        
+        formatter = logging.Formatter("%(asctime)s | %(levelname)-8s | %(message)s")
+        timed_file_handler = logging.handlers.TimedRotatingFileHandler(
+            filename='logs\\logs.txt',
+            when='midnight',
+            backupCount=0,
+            utc=False)
+        timed_file_handler.setFormatter(formatter)
+        logger = logging.getLogger()
+        logger.addHandler(timed_file_handler)
+        logger.setLevel(logging_level)
 
     def _log(self, level: LogLevel, message: str, *args: Any, **kwargs: Any):
         pass

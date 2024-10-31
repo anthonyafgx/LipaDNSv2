@@ -16,4 +16,7 @@ class NameserverInterface(ABC):
 
     @abstractmethod
     def set_record(self, dns_record: DNSRecord, logger: Logger):
+        """
+        Create/update any record with the domain name of dns_record and updates it with the new ip 
+        """
         pass

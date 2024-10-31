@@ -1,11 +1,11 @@
-from requests import get, post, patch, Response, RequestException, ConnectionError, HTTPError, Timeout
 from ipaddress import IPv4Address
 from typing import Optional
+from requests import get, post, patch, Response, RequestException, ConnectionError, HTTPError, Timeout
 
 from src.domain.value_objects import DNSRecord
 from src.infra.loggers.interface import Logger
 from src.infra.nameserver.interface import NameserverInterface
-from src.infra.nameserver.cloudflare.dtos import CloudflareListDNSRecordsInputDTO, CloudflareDNSRecord
+from src.infra.nameserver.cloudflare.dtos import CloudflareListDNSRecordsInputDTO, CloudflareDNSRecordInputDTO, CloudflareDNSRecordOutputDTO
 from src.infra.nameserver.cloudflare.exceptions import MultipleDNSRecordsFoundError
 
 class CloudflareNameserver(NameserverInterface):
@@ -27,7 +27,7 @@ class CloudflareNameserver(NameserverInterface):
             "type": "A" # IPv4
         }
 
-        cloudflare_dns_record: Optional[CloudflareDNSRecord] = self._get_cloudflare_record(params=params, logger=logger)
+        cloudflare_dns_record: Optional[CloudflareDNSRecordInputDTO] = self._get_cloudflare_record(params=params, logger=logger)
 
         if (cloudflare_dns_record is None):
             return None
@@ -41,7 +41,7 @@ class CloudflareNameserver(NameserverInterface):
             "type": "A" # IPv4
         }
 
-        cloudflare_dns_record: Optional[CloudflareDNSRecord] = self._get_cloudflare_record(params=params, logger=logger)
+        cloudflare_dns_record: Optional[CloudflareDNSRecordInputDTO] = self._get_cloudflare_record(params=params, logger=logger)
 
         if (cloudflare_dns_record is None):
             return None
@@ -50,26 +50,25 @@ class CloudflareNameserver(NameserverInterface):
                          name=cloudflare_dns_record.name)
 
     def set_record(self, dns_record: DNSRecord, logger: Logger):
-        record_information: dict[str, str | IPv4Address] = {
+        lookup_information: dict[str, str | IPv4Address] = {
             "name": dns_record.name,
-            "content": dns_record.ip,
             "type": "A" # IPv4
         }
 
-        existing_record: Optional[CloudflareDNSRecord] = self._get_cloudflare_record(params=record_information, logger=logger)
+        existing_record: Optional[CloudflareDNSRecordInputDTO] = self._get_cloudflare_record(params=lookup_information, logger=logger)
 
         if (existing_record is None):
             # If record does not exist, create it
-            post_information: dict[str, str | bool] = {}
-            post_information.update(record_information)
-            post_information["content"] = str(record_information["content"])
-            post_information["proxied"] = True
+            output_dto = CloudflareDNSRecordOutputDTO(
+                name=dns_record.name,
+                content=dns_record.ip,
+            )
 
             url: str = f"https://api.cloudflare.com/client/v4/zones/{self._cloudflare_zone_id}/dns_records"
             try:
-                response = post(url=url, headers=self._headers, json=post_information, timeout=5)
+                response = post(url=url, headers=self._headers, json=output_dto.model_dump(), timeout=5)
                 response.raise_for_status()
-                logger.info(f"Successfully created the Cloudflare DNS Record with params: {record_information}")
+                logger.info(f"Successfully created the Cloudflare DNS Record with params: {output_dto.model_dump()}")
             except ConnectionError as e:
                 logger.error(f"Connection Error. Failed to connect to the Cloudflare API: {e.response}")
                 return
@@ -86,8 +85,8 @@ class CloudflareNameserver(NameserverInterface):
             # If exists, update it
             url: str = f"https://api.cloudflare.com/client/v4/zones/{self._cloudflare_zone_id}/dns_records/{existing_record.id}"
             patch_information: dict[str, str | bool] = {}
-            patch_information.update(record_information)
-            patch_information["content"] = str(record_information["content"])
+            patch_information.update(lookup_information) # type: ignore
+            patch_information["content"] = str(dns_record.ip)
             patch_information["proxied"] = True
 
             try:
@@ -106,7 +105,7 @@ class CloudflareNameserver(NameserverInterface):
                 return
 
 
-    def _get_cloudflare_record(self, params: dict[str, str | IPv4Address], logger: Logger) -> Optional[CloudflareDNSRecord]:
+    def _get_cloudflare_record(self, params: dict[str, str | IPv4Address], logger: Logger) -> Optional[CloudflareDNSRecordInputDTO]:
         url: str = f"https://api.cloudflare.com/client/v4/zones/{self._cloudflare_zone_id}/dns_records"
         
         # Make request to Cloudflare
@@ -136,7 +135,7 @@ class CloudflareNameserver(NameserverInterface):
                 return None
             if (input_dto.result_info.count > 1):
                 raise MultipleDNSRecordsFoundError(input_dto=input_dto)
-            cloudflare_dns_record: CloudflareDNSRecord = input_dto.result[0]
+            cloudflare_dns_record: CloudflareDNSRecordInputDTO = input_dto.result[0]
             logger.info(f"Cloudflare DNS record found for params: {params}")
             return cloudflare_dns_record
         except ValueError as e:
