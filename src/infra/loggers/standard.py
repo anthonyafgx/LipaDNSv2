@@ -1,6 +1,10 @@
 import logging
 import logging.handlers
 from typing import Any
+from os import mkdir
+from os.path import isdir
+from sys import stdout
+
 from src.infra.loggers.interface import Logger, LogLevel
 
 class StandardLogger(Logger):
@@ -24,15 +28,24 @@ class StandardLogger(Logger):
             case _: # type: ignore
                 logging_level = logging.DEBUG
         
+        if not isdir("logs"):
+            mkdir("logs")
+
         formatter = logging.Formatter("%(asctime)s | %(levelname)-8s | %(message)s")
+        
         timed_file_handler = logging.handlers.TimedRotatingFileHandler(
             filename='logs\\logs.txt',
             when='midnight',
             backupCount=0,
             utc=False)
         timed_file_handler.setFormatter(formatter)
+
+        console_handler = logging.StreamHandler(stdout)
+        console_handler.setFormatter(formatter)
+
         logger = logging.getLogger()
         logger.addHandler(timed_file_handler)
+        logger.addHandler(console_handler)
         logger.setLevel(logging_level)
 
     def _log(self, level: LogLevel, message: str, *args: Any, **kwargs: Any):
